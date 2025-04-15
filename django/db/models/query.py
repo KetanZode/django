@@ -170,17 +170,19 @@ class RawModelIterable(BaseIterable):
                 missing = [
                     model_cls._meta.get_field(field.name).attname
                     for field in pk_field.fields
-                    if model_cls._meta.get_field(field.name).attname not in model_init_names
+                    if model_cls._meta.get_field(field.name).attname
+                    not in model_init_names
                 ]
                 if missing:
                     raise exceptions.FieldDoesNotExist(
-                        f"Raw query must include all parts of the composite primary key: {missing}"
+                        "Raw query must include all parts of the composite primary key:"
+                        f"{missing}"
                     )
             else:
                 if pk_field.attname not in model_init_names:
                     raise exceptions.FieldDoesNotExist(
                         "Raw query must include the primary key"
-                    )   
+                    )
             fields = [self.queryset.model_fields.get(c) for c in self.queryset.columns]
             cols = [f.get_col(f.model._meta.db_table) if f else None for f in fields]
             converters = compiler.get_converters(cols)
